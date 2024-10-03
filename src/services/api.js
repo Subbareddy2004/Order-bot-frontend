@@ -14,8 +14,13 @@ export const sendMessage = async (message) => {
 };
 
 export const getPopularItems = async () => {
-    const response = await axios.get(`${API_BASE_URL}/popular-items`);
-    return response.data;
+    try {
+        const response = await axios.get(`${API_BASE_URL}/api/popular-items`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching popular items:', error);
+        throw error;
+    }
 };
 
 export const getPersonalizedRecommendations = async (query) => {
