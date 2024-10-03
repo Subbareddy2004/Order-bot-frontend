@@ -2,7 +2,7 @@ import React from 'react';
 import { FaShoppingCart, FaTrash, FaMinus, FaPlus } from 'react-icons/fa';
 
 const Cart = ({ cart, removeFromCart, updateQuantity, clearCart, orderHistory = [] }) => {
-    const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0);
+    const totalPrice = cart.reduce((total, item) => total + (item.productPrice || 0) * item.quantity, 0);
 
     return (
         <div className="cart-page">
@@ -13,15 +13,15 @@ const Cart = ({ cart, removeFromCart, updateQuantity, clearCart, orderHistory = 
                 <>
                     {cart.map((item) => (
                         <div key={item.id} className="cart-item">
-                            <img src={item.image} alt={item.name} className="cart-item-image" />
+                            <img src={item.productImg} alt={item.productTitle} className="cart-item-image" />
                             <div className="cart-item-details">
-                                <h3>{item.name}</h3>
+                                <h3>{item.productTitle}</h3>
                                 <div className="quantity-control">
                                     <button onClick={() => updateQuantity(item.id, item.quantity - 1)}><FaMinus /></button>
                                     <span>{item.quantity}</span>
                                     <button onClick={() => updateQuantity(item.id, item.quantity + 1)}><FaPlus /></button>
                                 </div>
-                                <p>Price: ₹{item.price * item.quantity}</p>
+                                <p>Price: ₹{(item.productPrice || 0) * item.quantity}</p>
                             </div>
                             <button onClick={() => removeFromCart(item.id)} className="remove-item">
                                 <FaTrash />
@@ -29,7 +29,7 @@ const Cart = ({ cart, removeFromCart, updateQuantity, clearCart, orderHistory = 
                         </div>
                     ))}
                     <div className="cart-summary">
-                        <h3>Total: ₹{totalPrice}</h3>
+                        <h3>Total: ₹{totalPrice.toFixed(2)}</h3>
                         <button onClick={clearCart} className="clear-cart">Clear Cart</button>
                         <button className="checkout">Proceed to Checkout</button>
                     </div>
@@ -45,10 +45,10 @@ const Cart = ({ cart, removeFromCart, updateQuantity, clearCart, orderHistory = 
                         <div key={index} className="past-order">
                             <h3>Order #{order.id}</h3>
                             <p>Date: {new Date(order.date).toLocaleString()}</p>
-                            <p>Total: ₹{order.total}</p>
+                            <p>Total: ₹{order.total.toFixed(2)}</p>
                             <ul>
                                 {order.items.map((item, itemIndex) => (
-                                    <li key={itemIndex}>{item.name} x {item.quantity}</li>
+                                    <li key={itemIndex}>{item.productTitle} x {item.quantity}</li>
                                 ))}
                             </ul>
                         </div>

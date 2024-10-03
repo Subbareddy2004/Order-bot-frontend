@@ -99,7 +99,7 @@ const ChatBot = ({ onRecommendations, addToCart }) => {
                         ))}
                         {isLoading && (
                             <div className="message bot">
-                                <FaSpinner className="fa-spin" /> Thinking...
+                                <FaSpinner className="fa-spin" /> Finding Items...
                             </div>
                         )}
                         {!mealType && (
