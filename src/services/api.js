@@ -1,13 +1,16 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://ecub-baackend.vercel.app';
 
 export const sendMessage = async (message) => {
-    const response = await axios.post(`${API_BASE_URL}/chat`, { message });
-    return {
-        message: response.data.message,
-        recommendations: response.data.recommendations || []
-    };
+    const response = await fetch(`${API_BASE_URL}/api/chat`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message }),
+    });
+    return response.json();
 };
 
 export const getPopularItems = async () => {
