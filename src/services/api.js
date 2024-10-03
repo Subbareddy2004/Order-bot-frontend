@@ -24,14 +24,14 @@ export const getPopularItems = async () => {
 };
 
 export const getPersonalizedRecommendations = async (query) => {
-    const response = await axios.get(`${API_BASE_URL}/personalized-recommendations`, {
+    const response = await axios.get(`${API_BASE_URL}/api/personalized-recommendations`, {
         params: { query }
     });
     return response.data;
 };
 
 export const fetchPopularItems = async () => {
-    const response = await fetch(`${API_BASE_URL}/popular-items`);
+    const response = await fetch(`${API_BASE_URL}/api/popular-items`);
     if (!response.ok) {
         throw new Error('Failed to fetch popular items');
     }
