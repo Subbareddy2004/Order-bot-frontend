@@ -4,6 +4,7 @@ import PopularItems from './components/PopularItems';
 import Cart from './components/Cart';
 import Navbar from './components/Navbar';
 import ChatBot from './components/ChatBot';
+import Hotels from './components/Hotels'; // Add this import
 import { getPopularItems } from './services/api';
 import './App.css';
 
@@ -62,8 +63,13 @@ const App = () => {
                 <Navbar cartItemCount={cart.length} />
                 <Routes>
                     <Route path="/" element={
-                        <div className="content-wrapper">
-                            <PopularItems items={popularItems} addToCart={addToCart} />
+                        <div className="main-content">
+                            <div className="content-left">
+                                <PopularItems items={popularItems} addToCart={addToCart} />
+                            </div>
+                            <div className="content-right">
+                                <Hotels />
+                            </div>
                         </div>
                     } />
                     <Route path="/cart" element={
