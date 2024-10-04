@@ -62,7 +62,7 @@ const ChatBot = ({ onRecommendations, addToCart }) => {
             }
         } catch (error) {
             console.error('Error sending message:', error);
-            setMessages(prev => [...prev, { text: "Sorry, I encountered an error while searching. Please try again.", sender: 'bot' }]);
+            setMessages(prev => [...prev, { text: "Sorry, we don't have any items matching your request. Please try a different search.", sender: 'bot' }]);
         } finally {
             setIsLoading(false);
             setIsSearching(false);
