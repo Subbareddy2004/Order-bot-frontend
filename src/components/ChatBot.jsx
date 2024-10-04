@@ -101,26 +101,26 @@ const ChatBot = ({ onRecommendations, addToCart }) => {
     );
 
     return (
-        <div className={`fixed bottom-4 right-4 z-50 ${isOpen ? 'w-80' : 'w-auto'}`}>
+        <div className={`fixed bottom-4 right-4 z-50 ${isOpen ? 'w-96' : 'w-auto'}`}>
             {!isOpen && (
                 <button 
-                    className="bg-[#FF6B35] text-white p-3 rounded-full shadow-lg hover:bg-[#F7C59F] hover:text-[#004E89] transition duration-300"
+                    className="bg-[#FF6B35] text-white p-4 rounded-full shadow-lg hover:bg-[#F7C59F] hover:text-[#004E89] transition duration-300"
                     onClick={toggleChat}
                 >
-                    <FaComments size={24} />
+                    <FaComments size={28} />
                 </button>
             )}
             {isOpen && (
                 <div className="bg-[#FF6B35] text-white p-4 flex justify-between items-center">
-                    <h3 className="font-bold">Chat with Bot</h3>
+                    <h3 className="font-bold text-lg">Chat with Bot</h3>
                     <button onClick={toggleChat} className="text-white hover:text-[#F7C59F]">
-                        <FaTimes size={20} />
+                        <FaTimes size={24} />
                     </button>
                 </div>
             )}
             {isOpen && (
                 <div className="bg-white rounded-lg shadow-xl overflow-hidden">
-                    <div className="h-96 overflow-y-auto p-4 bg-gray-100">
+                    <div className="h-[480px] overflow-y-auto p-4 bg-gray-100">
                         {messages.map((message, index) => (
                             <div key={index} className={`mb-4 ${message.sender === 'user' ? 'text-right' : 'text-left'}`}>
                                 <div className={`inline-block p-2 rounded-lg ${message.sender === 'user' ? 'bg-[#004E89] text-white' : 'bg-[#F7C59F] text-[#333333]'}`}>
@@ -164,14 +164,14 @@ const ChatBot = ({ onRecommendations, addToCart }) => {
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 placeholder="Search for items..."
-                                className="flex-grow p-2 rounded-l-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className="flex-grow p-3 rounded-l-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                             />
                             <button 
                                 onClick={handleSend}
-                                className="bg-[#FF6B35] text-white p-2 rounded-r-lg hover:bg-[#F7C59F] hover:text-[#004E89] transition duration-300"
+                                className="bg-[#FF6B35] text-white p-3 rounded-r-lg hover:bg-[#F7C59F] hover:text-[#004E89] transition duration-300"
                             >
-                                <FaPaperPlane />
+                                <FaPaperPlane size={20} />
                             </button>
                         </div>
                     </div>
