@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FaComments, FaTimes, FaPaperPlane, FaStar, FaPlus, FaSpinner } from 'react-icons/fa';
-import { sendMessage, getPersonalizedRecommendations } from '../services/api';
+import { FaComments, FaTimes, FaPaperPlane, FaStar, FaPlus, FaSpinner, FaMapMarkerAlt } from 'react-icons/fa';
+import { getPersonalizedRecommendations } from '../services/api';
 
 const ChatBot = ({ onRecommendations, addToCart }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -9,6 +9,7 @@ const ChatBot = ({ onRecommendations, addToCart }) => {
     const [mealType, setMealType] = useState('');
     const [recommendations, setRecommendations] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [isSearching, setIsSearching] = useState(false);
     const messagesEndRef = useRef(null);
 
     useEffect(() => {
@@ -25,16 +26,19 @@ const ChatBot = ({ onRecommendations, addToCart }) => {
 
     const handleMealTypeSelect = async (type) => {
         setMealType(type);
-        setMessages(prev => [...prev, { text: type, sender: 'user' }, { text: `Great! Here are some ${type} options for you.`, sender: 'bot' }]);
+        setMessages(prev => [...prev, { text: type, sender: 'user' }, { text: `Great! Here are some ${type} options for you. You can also search for specific items.`, sender: 'bot' }]);
         setIsLoading(true);
+        setIsSearching(true);
         try {
             const recs = await getPersonalizedRecommendations('', type);
             setRecommendations(recs);
             onRecommendations(recs);
         } catch (error) {
             console.error('Error fetching recommendations:', error);
+            setMessages(prev => [...prev, { text: "Sorry, I couldn't fetch recommendations at the moment. Please try again.", sender: 'bot' }]);
         } finally {
             setIsLoading(false);
+            setIsSearching(false);
         }
     };
 
@@ -43,17 +47,25 @@ const ChatBot = ({ onRecommendations, addToCart }) => {
 
         const userMessage = { text: input, sender: 'user' };
         setMessages(prev => [...prev, userMessage]);
+        setIsLoading(true);
+        setIsSearching(true);
 
         try {
-            const response = await sendMessage(input);
-            const botMessage = { text: response.message, sender: 'bot' };
-            setMessages(prev => [...prev, botMessage]);
-            
             const recs = await getPersonalizedRecommendations(input, mealType);
             setRecommendations(recs);
             onRecommendations(recs);
+            
+            if (recs.length === 0) {
+                setMessages(prev => [...prev, { text: "I couldn't find any items matching your request. Can you try a different search?", sender: 'bot' }]);
+            } else {
+                setMessages(prev => [...prev, { text: "Here are some recommendations based on your request:", sender: 'bot' }]);
+            }
         } catch (error) {
             console.error('Error sending message:', error);
+            setMessages(prev => [...prev, { text: "Sorry, I encountered an error while searching. Please try again.", sender: 'bot' }]);
+        } finally {
+            setIsLoading(false);
+            setIsSearching(false);
         }
 
         setInput('');
@@ -69,6 +81,12 @@ const ChatBot = ({ onRecommendations, addToCart }) => {
                     <FaStar className="text-yellow-400 mr-1" />
                     <span className="text-sm">{item.productRating.toFixed(1)}</span>
                 </div>
+                {item.distance && (
+                    <p className="text-sm text-gray-600">
+                        <FaMapMarkerAlt className="inline mr-1" />
+                        {item.distance.toFixed(2)} km away
+                    </p>
+                )}
             </div>
             <button 
                 onClick={() => {
@@ -110,10 +128,10 @@ const ChatBot = ({ onRecommendations, addToCart }) => {
                                 </div>
                             </div>
                         ))}
-                        {isLoading && (
+                        {(isLoading || isSearching) && (
                             <div className="text-center py-2">
                                 <FaSpinner className="animate-spin inline-block mr-2 text-[#FF6B35]" />
-                                <span className="text-[#004E89]">Finding items...</span>
+                                <span className="text-[#004E89]">Searching for items...</span>
                             </div>
                         )}
                         {!mealType && (
@@ -145,7 +163,7 @@ const ChatBot = ({ onRecommendations, addToCart }) => {
                                 type="text"
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
-                                placeholder="Type your message..."
+                                placeholder="Search for items..."
                                 className="flex-grow p-2 rounded-l-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                             />

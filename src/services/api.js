@@ -2,32 +2,22 @@ import axios from 'axios';
 
 const API_BASE_URL = 'https://ecub-baackend.vercel.app';
 
-export const sendMessage = async (message) => {
-    const response = await fetch(`${API_BASE_URL}/api/chat`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ message }),
-    });
-    return response.json();
-};
-
-export const getPopularItems = async () => {
-    try {
-        const response = await axios.get(`${API_BASE_URL}/api/popular-items`);
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching popular items:', error);
-        throw error;
-    }
-};
-
-export const getPersonalizedRecommendations = async (query) => {
-    const response = await axios.get(`${API_BASE_URL}/api/personalized-recommendations`, {
-        params: { query }
+export const sendMessage = async (message, mealType) => {
+    const response = await axios.post(`${API_BASE_URL}/api/chat`, {
+        message,
+        mealType
     });
     return response.data;
+};
+
+export const getPersonalizedRecommendations = async (query, mealType) => {
+    try {
+        const response = await sendMessage(query, mealType);
+        return response.recommendations;
+    } catch (error) {
+        console.error('Error getting personalized recommendations:', error);
+        throw error; // Propagate the error to be handled in the component
+    }
 };
 
 export const fetchPopularItems = async () => {
@@ -36,4 +26,16 @@ export const fetchPopularItems = async () => {
         throw new Error('Failed to fetch popular items');
     }
     return response.json();
+};
+
+export const getPopularItems = async () => {
+    const response = await axios.get(`${API_BASE_URL}/api/popular-items`);
+    return response.data;
+};
+
+export const getNearbyHotels = async (latitude, longitude) => {
+    const response = await axios.get(`${API_BASE_URL}/api/nearby-hotels`, {
+        params: { latitude: latitude.toString(), longitude: longitude.toString() }
+    });
+    return response.data;
 };
